@@ -1,0 +1,18 @@
+[profile.default]
+evm_version = "cancun"
+ffi = true
+fs_permissions = [{access = "read-write", path = ".forge-snapshots/"}]
+libs = ["lib"]
+out = "out"
+solc_version = "0.8.30"
+src = "src"
+via_ir = false
+
+[rpc_endpoints]
+sepolia = "${SEPOLIA_RPC_URL}"
+
+[lint]
+exclude_lints = ["screaming-snake-case-immutable", "screaming-snake-case-const"]
+
+[profile.sepolia]
+rpc_url = "${SEPOLIA_RPC_URL}"
