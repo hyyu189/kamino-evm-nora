@@ -7,10 +7,24 @@
 node_modules/
 */node_modules/
 
+# Foundry build artifacts
+out/
+cache/
+broadcast/
+artifacts/
+
+# Coverage reports
+coverage/
+coverage.json
+lcov.info
+*.coverage
+
 # Build outputs
 dist/
 build/
-out/
+
+# Foundry lock file (auto-generated)
+foundry.lock
 
 # IDE files
 .vscode/
@@ -25,3 +39,30 @@ Thumbs.db
 # Logs
 *.log
 logs/
+
+# Temporary files
+*.tmp
+*.temp
+.tmp/
+
+# Testing artifacts
+test-failures
+.coverage_artifacts/
+.coverage_cache/
+
+# TypeScript (if you add frontend later)
+*.tsbuildinfo
+
+# Python (if you add Python scripts)
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+*.egg-info/
+
+# NPM/Yarn (if you add JS/TS)
+package-lock.json
+yarn.lock
+.npm/
+.yarn/
