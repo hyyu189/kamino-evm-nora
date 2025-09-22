@@ -5,7 +5,7 @@ import {Script} from "forge-std/Script.sol";
 import {console} from "forge-std/console.sol";
 import {KaminoVault} from "../src/KaminoVault.sol";
 import {UniswapV4Strategy} from "../src/UniswapV4Strategy.sol";
-import {MockERC20} from "../test/mocks/MockERC20.sol";
+import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import {IPoolManager} from "v4-core/src/interfaces/IPoolManager.sol";
 import {PoolKey} from "v4-core/src/types/PoolKey.sol";
 import {Currency, CurrencyLibrary} from "@uniswap/v4-core/src/types/Currency.sol";
@@ -15,6 +15,8 @@ contract Deploy is Script {
     using CurrencyLibrary for Currency;
 
     address internal constant POOL_MANAGER = 0xC2e4247322741c48bCA831F2f0D463A56a35528a; // Sepolia
+    address internal constant WETH_SEPOLIA = 0x7b79995e5f793A07Bc00c21412e50Ecae098E7f9;
+    address internal constant USDC_SEPOLIA = 0x1c7D4B196Cb0C7B01d743Fbc6116a902379C7238;
 
     function run() external {
         uint256 deployerPrivateKey = vm.envUint("PRIVATE_KEY");
@@ -22,16 +24,15 @@ contract Deploy is Script {
 
         vm.startBroadcast(deployerPrivateKey);
 
-        // Deploy mock tokens
-        MockERC20 token0 = new MockERC20("Token A", "TKA");
-        MockERC20 token1 = new MockERC20("Token B", "TKB");
+        // Using official Sepolia addresses instead of deploying mocks
+        IERC20 token0 = IERC20(USDC_SEPOLIA);
+        IERC20 token1 = IERC20(WETH_SEPOLIA);
 
-        console.log("Token0 deployed to:", address(token0));
-        console.log("Token1 deployed to:", address(token1));
+        console.log("Using USDC (Token0) at:", address(token0));
+        console.log("Using WETH (Token1) at:", address(token1));
 
-        // For this MVP, we'll use one of the tokens as the vault's asset
-        // In a real scenario, this would likely be a stablecoin or major asset
-        MockERC20 assetToken = token0;
+        // The vault will manage USDC
+        IERC20 assetToken = token0;
 
         // Deploy KaminoVault
         KaminoVault vault = new KaminoVault(

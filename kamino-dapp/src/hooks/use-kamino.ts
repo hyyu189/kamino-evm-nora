@@ -1,8 +1,9 @@
 import { useAccount, useReadContract, useWriteContract, useWaitForTransactionReceipt } from "wagmi";
 import { contracts } from "@/config/contracts";
 import { formatUnits, parseUnits } from "viem";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useToast } from "@/components/ui/use-toast";
+import { erc20Abi } from "viem";
 
 export function useKamino() {
   const { address } = useAccount();
@@ -30,7 +31,7 @@ export function useKamino() {
   });
 
   const { data: decimals, isLoading: isDecimalsLoading } = useReadContract({
-    abi: contracts.kaminoVault.abi, // Using vault ABI for decimals, assuming it's a standard ERC20
+    abi: erc20Abi,
     address: asset,
     functionName: 'decimals',
     query: {
@@ -38,13 +39,32 @@ export function useKamino() {
     },
   });
 
+  const { data: assetSymbol, isLoading: isAssetSymbolLoading } = useReadContract({
+    abi: erc20Abi,
+    address: asset,
+    functionName: 'symbol',
+    query: {
+      enabled: !!asset,
+    },
+  });
+
+  const { data: userAssetBalance, isLoading: isUserAssetBalanceLoading, refetch: refetchUserAssetBalance } = useReadContract({
+    abi: erc20Abi,
+    address: asset,
+    functionName: 'balanceOf',
+    args: [address!],
+    query: {
+      enabled: !!address && !!asset,
+    },
+  });
+
   const parsedDepositAmount = depositAmount && decimals ? parseUnits(depositAmount, decimals) : 0n;
 
   const { data: allowance, isLoading: isAllowanceLoading, refetch: refetchAllowance } = useReadContract({
-    abi: contracts.kaminoVault.abi,
+    abi: erc20Abi,
     address: asset,
     functionName: 'allowance',
-    args: [address, contracts.kaminoVault.address],
+    args: [address!, contracts.kaminoVault.address],
     query: {
       enabled: !!address && !!asset,
     },
@@ -60,6 +80,7 @@ export function useKamino() {
       toast({ title: "Approval Successful", description: `Transaction confirmed: ${receipt.transactionHash}` });
       refetchAllowance();
       refetchUserBalance();
+      refetchUserAssetBalance();
     },
     onError: (error) => {
       toast({ title: "Approval Failed", description: error.message, variant: "destructive" });
@@ -72,6 +93,7 @@ export function useKamino() {
       toast({ title: "Deposit Successful", description: `Transaction confirmed: ${receipt.transactionHash}` });
       refetchTotalAssets();
       refetchUserBalance();
+      refetchUserAssetBalance();
       setDepositAmount("");
     },
     onError: (error) => {
@@ -85,6 +107,7 @@ export function useKamino() {
       toast({ title: "Withdrawal Successful", description: `Transaction confirmed: ${receipt.transactionHash}` });
       refetchTotalAssets();
       refetchUserBalance();
+      refetchUserAssetBalance();
       setWithdrawAmount("");
     },
     onError: (error) => {
@@ -98,7 +121,7 @@ export function useKamino() {
   const handleApprove = () => {
     if (!asset) return;
     approve({
-      abi: contracts.kaminoVault.abi,
+      abi: erc20Abi,
       address: asset,
       functionName: 'approve',
       args: [contracts.kaminoVault.address, parsedDepositAmount],
@@ -125,11 +148,15 @@ export function useKamino() {
 
   const formattedTotalAssets = totalAssets && decimals ? formatUnits(totalAssets, decimals) : "0";
   const formattedUserBalance = userBalance && decimals ? formatUnits(userBalance, decimals) : "0";
+  const formattedUserAssetBalance = userAssetBalance && decimals ? formatUnits(userAssetBalance, decimals) : "0";
 
   return {
     totalAssets: formattedTotalAssets,
     userBalance: formattedUserBalance,
-    isLoading: isTotalAssetsLoading || isUserBalanceLoading || isAssetLoading || isDecimalsLoading || isAllowanceLoading,
+    userAssetBalance: formattedUserAssetBalance,
+    assetSymbol: assetSymbol || "Token",
+    asset,
+    isLoading: isTotalAssetsLoading || isUserBalanceLoading || isAssetLoading || isDecimalsLoading || isAllowanceLoading || isAssetSymbolLoading || isUserAssetBalanceLoading,
     depositAmount,
     setDepositAmount,
     withdrawAmount,

@@ -1,6 +1,6 @@
 export const contracts = {
   kaminoVault: {
-    address: "0x5FbDB2315678afecb367f032d93F642f64180aa3", // Replace with your deployed contract address
+    address: "0x5a2A2b8260568990B783A7E2D7aB54A541248Dd2", // Deployed KaminoVault on Sepolia with real USDC
     abi: [
       {
         "inputs": [
@@ -996,5 +996,23 @@ export const contracts = {
         "type": "function"
       }
     ]
+  },
+  uniswapV4Strategy: {
+    address: "0xF5283BEeDcf0B609365e32CEBFaF0845a9Cd5d82", // Deployed UniswapV4Strategy on Sepolia with real USDC/WETH
+    abi: [
+      // Add UniswapV4Strategy ABI here if needed for frontend interaction
+    ]
+  },
+  tokens: {
+    usdc: {
+      address: "0x1c7D4B196Cb0C7B01d743Fbc6116a902379C7238", // USDC on Sepolia
+      symbol: "USDC",
+      decimals: 6
+    },
+    weth: {
+      address: "0x7b79995e5f793A07Bc00c21412e50Ecae098E7f9", // WETH on Sepolia
+      symbol: "WETH",
+      decimals: 18
+    }
   }
 } as const;

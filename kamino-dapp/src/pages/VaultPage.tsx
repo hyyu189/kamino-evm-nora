@@ -10,6 +10,8 @@ export function VaultPage() {
   const {
     totalAssets,
     userBalance,
+    userAssetBalance,
+    assetSymbol,
     isLoading,
     depositAmount,
     setDepositAmount,
@@ -45,15 +47,23 @@ export function VaultPage() {
               {isLoading ? (
                 <Skeleton className="h-6 w-32" />
               ) : (
-                <p className="text-lg font-semibold">${totalAssets}</p>
+                <p className="text-lg font-semibold">{totalAssets} {assetSymbol}</p>
               )}
             </div>
             <div>
-              <p className="text-sm text-muted-foreground">Your Balance</p>
+              <p className="text-sm text-muted-foreground">Your Vault Shares</p>
               {isLoading ? (
                 <Skeleton className="h-6 w-24" />
               ) : (
-                <p className="text-lg font-semibold">${userBalance}</p>
+                <p className="text-lg font-semibold">{userBalance} shares</p>
+              )}
+            </div>
+            <div>
+              <p className="text-sm text-muted-foreground">Your {assetSymbol} Balance</p>
+              {isLoading ? (
+                <Skeleton className="h-6 w-24" />
+              ) : (
+                <p className="text-lg font-semibold">{userAssetBalance} {assetSymbol}</p>
               )}
             </div>
             <div>
@@ -72,21 +82,30 @@ export function VaultPage() {
         <TabsContent value="deposit">
           <Card>
             <CardHeader>
-              <CardTitle>Deposit</CardTitle>
+              <CardTitle>Deposit {assetSymbol}</CardTitle>
               <CardDescription>
-                Deposit assets into the vault to start earning yield.
+                Deposit {assetSymbol} into the vault to start earning yield from USDC/WETH liquidity provision.
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-2">
               <div className="space-y-1">
-                <Label htmlFor="deposit-amount">Amount</Label>
-                <Input
-                  id="deposit-amount"
-                  type="number"
-                  placeholder="0.0"
-                  value={depositAmount}
-                  onChange={(e) => setDepositAmount(e.target.value)}
-                />
+                <Label htmlFor="deposit-amount">Amount ({assetSymbol})</Label>
+                <div className="relative">
+                  <Input
+                    id="deposit-amount"
+                    type="number"
+                    placeholder="0.0"
+                    value={depositAmount}
+                    onChange={(e) => setDepositAmount(e.target.value)}
+                    className="pr-16"
+                  />
+                  <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+                    <span className="text-sm text-muted-foreground">{assetSymbol}</span>
+                  </div>
+                </div>
+                <p className="text-xs text-muted-foreground">
+                  Available: {userAssetBalance} {assetSymbol}
+                </p>
               </div>
             </CardContent>
             <CardFooter>
@@ -111,21 +130,30 @@ export function VaultPage() {
         <TabsContent value="withdraw">
           <Card>
             <CardHeader>
-              <CardTitle>Withdraw</CardTitle>
+              <CardTitle>Withdraw {assetSymbol}</CardTitle>
               <CardDescription>
-                Withdraw your assets and realize your earnings.
+                Withdraw your {assetSymbol} and realize your earnings.
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-2">
               <div className="space-y-1">
-                <Label htmlFor="withdraw-amount">Amount</Label>
-                <Input
-                  id="withdraw-amount"
-                  type="number"
-                  placeholder="0.0"
-                  value={withdrawAmount}
-                  onChange={(e) => setWithdrawAmount(e.target.value)}
-                />
+                <Label htmlFor="withdraw-amount">Amount ({assetSymbol})</Label>
+                <div className="relative">
+                  <Input
+                    id="withdraw-amount"
+                    type="number"
+                    placeholder="0.0"
+                    value={withdrawAmount}
+                    onChange={(e) => setWithdrawAmount(e.target.value)}
+                    className="pr-16"
+                  />
+                  <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+                    <span className="text-sm text-muted-foreground">{assetSymbol}</span>
+                  </div>
+                </div>
+                <p className="text-xs text-muted-foreground">
+                  Vault Shares: {userBalance}
+                </p>
               </div>
             </CardContent>
             <CardFooter>

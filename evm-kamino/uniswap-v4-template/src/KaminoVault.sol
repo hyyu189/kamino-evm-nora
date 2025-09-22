@@ -62,7 +62,7 @@ contract KaminoVault is ERC4626, Ownable {
      * @param _symbol The symbol of the vault token.
      */
     constructor(
-        ERC20 _asset,
+        IERC20 _asset,
         string memory _name,
         string memory _symbol,
         address initialOwner
@@ -108,7 +108,7 @@ contract KaminoVault is ERC4626, Ownable {
      * @return The total value of underlying assets managed by the vault and strategy.
      */
     function totalAssets() public view override returns (uint256) {
-        uint256 assetsInVault = ERC20(asset()).balanceOf(address(this));
+        uint256 assetsInVault = IERC20(asset()).balanceOf(address(this));
         uint256 assetsInStrategy = 0;
         if (strategy != address(0)) {
             assetsInStrategy = IStrategy(strategy).totalAssets();

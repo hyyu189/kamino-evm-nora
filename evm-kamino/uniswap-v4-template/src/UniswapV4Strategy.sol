@@ -387,16 +387,16 @@ contract UniswapV4Strategy is IStrategy, Ownable, ReentrancyGuard, IUnlockCallba
                 }
             }
             
-            function _getNewTick(int24 currentTick, int24 tickSpacing, uint24 rangeWidth, bool isUpper) internal pure returns (int24) {
+            function _getNewTick(int24 currentTick, int24 tickSpacing, uint24 _rangeWidth, bool isUpper) internal pure returns (int24) {
                 int24 centeredTick = currentTick / tickSpacing;
                 if (currentTick < 0 && currentTick % tickSpacing != 0) {
                     centeredTick--;
                 }
 
                 if (isUpper) {
-                    return (centeredTick + int24(rangeWidth / 2)) * tickSpacing;
+                    return (centeredTick + int24(_rangeWidth / 2)) * tickSpacing;
                 } else {
-                    return (centeredTick - int24(rangeWidth / 2)) * tickSpacing;
+                    return (centeredTick - int24(_rangeWidth / 2)) * tickSpacing;
                 }
             }
         }

@@ -62,7 +62,18 @@ __pycache__/
 *.egg-info/
 
 # NPM/Yarn (if you add JS/TS)
-package-lock.json
 yarn.lock
 .npm/
 .yarn/
+
+# Vercel deployment (frontend)
+.vercel/
+
+# ESLint cache
+.eslintcache
+
+# Runtime data
+pids
+*.pid
+*.seed
+*.pid.lock
